@@ -1,6 +1,9 @@
 package com.example.genghiskhan.region;
 
 import com.example.genghiskhan.kingdom.Kingdom;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -14,18 +17,17 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @Entity(name="region")
 public class Region {
     @Id
-    private Byte id;
+    private Integer id;
 
     @Column(length = 45)
     private String name;
 
 
     @ManyToOne
-    @JoinColumn(name = "kingdom_id", foreignKey=@ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "kingdom_id")
     private Kingdom kingdom;
 
     private Integer money;
@@ -35,22 +37,58 @@ public class Region {
     private Integer population;
 
     @Column(name = "military_unit")
-    private Byte militaryUnit;
+    private Integer militaryUnit;
 
     @Column(name = "training_degree")
-    private Byte trainingDegree;
+    private Integer trainingDegree;
 
-
-    @ManyToMany(mappedBy = "regions2")
-    private Set<Region> regions1 = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "RegionList",
-            joinColumns = @JoinColumn(name = "region1_id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT)),
-            inverseJoinColumns = @JoinColumn(name = "region2_id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT)))
-    private Set<Region> regions2 = new HashSet<>();
+    @JoinTable(name="region_rel",
+            joinColumns={@JoinColumn(name="region2_id")},
+            inverseJoinColumns={@JoinColumn(name="region1_id")})
+    private Set<Region> region1 = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name="region_rel",
+            joinColumns={@JoinColumn(name="region1_id")},
+            inverseJoinColumns={@JoinColumn(name="region2_id")})
+    private Set<Region> region2 = new HashSet<>();
+
+
+    @Override
+    public String toString() {
+        return "Region{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", kingdom=" + kingdom +
+                ", money=" + money +
+                ", food=" + food +
+                ", population=" + population +
+                ", militaryUnit=" + militaryUnit +
+                ", trainingDegree=" + trainingDegree +
+//                ", region1=" + region1 +
+                ", region2=" + getRegion2Str() +
+                '}';
+    }
+
+
+    private String getRegion2Str() {
+        String str = "";
+        for (Region region : region2) {
+            str+= "Region{" +
+                    "id=" + region.id +
+                    ", name='" + region.name + '\'' +
+                    ", kingdom=" + region.kingdom +
+                    ", money=" + region.money +
+                    ", food=" + region.food +
+                    ", population=" + region.population +
+                    ", militaryUnit=" + region.militaryUnit +
+                    ", trainingDegree=" + region.trainingDegree +
+                    '}';
+        }
+        return str;
+    }
 
     // getters and setters
 }

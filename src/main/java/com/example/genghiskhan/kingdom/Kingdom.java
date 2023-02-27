@@ -15,13 +15,22 @@ import lombok.Setter;
 public class Kingdom {
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private Integer id;
 
     @Column(length = 45)
     private String name;
 
     @Column(length = 1000)
     private String description;
+
+    @Override
+    public String toString() {
+        return "Kingdom{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 
     // getters and setters
 }

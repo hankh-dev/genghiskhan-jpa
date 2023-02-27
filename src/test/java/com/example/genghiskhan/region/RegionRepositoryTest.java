@@ -9,6 +9,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 //@Transactional(propagation = Propagation.NOT_SUPPORTED) // 이코드를 지우면 실DB에 입력되지 않는다.
@@ -21,11 +23,22 @@ class RegionRepositoryTest {
     @Test
     void test() {
 
-        Region region1 = regionRepository.findById((byte)10).get();
+        Optional<Region> optionalRegion = regionRepository.findById(10);
+        if(optionalRegion.isPresent()) {
+            Region region = optionalRegion.get();
+//            System.out.println(region);
+            System.out.println(region.getRegion2());
+//            region.getRegion2().forEach(r-> System.out.println(r.getName()));
+        }
+
+//        Region region = regionRepository.findById(44).orElse(null);
+//        System.out.println(region.getName());
+
+
 //        Region region2 = regionRepository.findById((byte)2).get();
 //        Region region3 = regionRepository.findById((byte)3).get();
 
-        System.out.println(region1);
+//        System.out.println(region1);
 //        System.out.println(region2);
 //        System.out.println(region3);
 //
