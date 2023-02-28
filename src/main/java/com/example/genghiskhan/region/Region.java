@@ -47,7 +47,7 @@ public class Region {
     @JoinTable(name="region_rel",
             joinColumns={@JoinColumn(name="region2_id")},
             inverseJoinColumns={@JoinColumn(name="region1_id")})
-    private Set<Region> region1 = new HashSet<>();
+    transient private Set<Region> region1 = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name="region_rel",

@@ -1,5 +1,8 @@
 package com.example.genghiskhan.region;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
@@ -27,8 +31,35 @@ class RegionRepositoryTest {
         if(optionalRegion.isPresent()) {
             Region region = optionalRegion.get();
 //            System.out.println(region);
-            System.out.println(region.getRegion2());
+//            System.out.println(region.getRegion2());
 //            region.getRegion2().forEach(r-> System.out.println(r.getName()));
+
+            // jackson 사용시 stack overflow error 방지
+            // ref : https://stackoverflow.com/a/10209979
+            for (Region region2 : region.getRegion2()) {
+                region2.setRegion2(null);
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                // 객체를 JSON 타입의 파일로 변환
+//                mapper.writeValue(new File("c:\\user.json"), user);
+                // 객체를 JSON 타입의 String으로 변환
+//                String jsonInString01 = mapper.writeValueAsString(region);
+//                System.out.println(jsonInString01);
+
+                // 객체를 JSON 타입의 String으로 변환 및 정렬
+                String jsonInString02 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(region);
+                System.out.println(jsonInString02);
+
+            } catch (JsonGenerationException e) {
+                e.printStackTrace();
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
 //        Region region = regionRepository.findById(44).orElse(null);
