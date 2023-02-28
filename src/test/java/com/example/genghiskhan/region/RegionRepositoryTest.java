@@ -1,5 +1,7 @@
 package com.example.genghiskhan.region;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +28,22 @@ class RegionRepositoryTest {
         Optional<Region> optionalRegion = regionRepository.findById(10);
         if(optionalRegion.isPresent()) {
             Region region = optionalRegion.get();
-//            System.out.println(region);
-            System.out.println(region.getRegion2());
+            System.out.println(region);
+//            System.out.println(region.getRegion2());
+
+            // gson사용시 stack overflow error 방지
+            // ref : https://stackoverflow.com/a/10209979
+            for (Region region2 : region.getRegion2()) {
+                region2.setRegion2(null);
+            }
+
+//            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String jsonRegion = gson.toJson(region);
+            System.out.println(jsonRegion);
+
+
+
 //            region.getRegion2().forEach(r-> System.out.println(r.getName()));
         }
 
