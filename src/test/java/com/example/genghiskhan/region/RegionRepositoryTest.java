@@ -38,7 +38,11 @@ class RegionRepositoryTest {
             }
 
 //            Gson gson = new Gson();
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .serializeNulls()   // null인 property도 포함시키기
+                    .create();
+            
             String jsonRegion = gson.toJson(region);
             System.out.println(jsonRegion);
 
